@@ -3,13 +3,20 @@
 ### Mini Project 3
 
 
-# Mini Project 3
+# Mini Project 3 - Expense Tracker with Enhanced Authentication
 
 ## Description
 
-This project analyzes the "daily_food_nutrition_dataset.csv" using Pandas to calculate the total calorie intake per meal type for a random selection of users. It then generates five bar charts using Matplotlib, visualizing the calorie distribution for each user. These charts are saved as PNG files in a "charts" directory.
+This project extends a basic Flask expense tracker application by adding robust user authentication features. It includes user registration, login, and logout functionalities, enhanced with Bootstrap modals for user feedback. The application utilizes a SQLite database for user management and session handling for secure user sessions.
 
-The project addresses the question: **"What is the calorie intake per meal type for a random selection of users from the dataset?"**
+### Key features include:
+
+* **User Registration:** Allows new users to register with a unique username, first name, last name, and password.
+* **User Login:** Enables registered users to log in using their credentials.
+* **User Logout:** Provides a secure way for users to log out of their session.
+* **Bootstrap Modals:** Displays success and error messages using Bootstrap modals for a better user experience.
+* **Database Integration:** Uses SQLite to store user data securely.
+* **Session Management:** Manages user sessions to maintain login status.
 
 ## Getting Started
 
@@ -23,7 +30,7 @@ The project addresses the question: **"What is the calorie intake per meal type 
     ```
 
 2.  **Setup Database:**
-    * Setup the database using flask:
+    * Initialize the SQLite database using Flask:
     ```
     flask --app flaskr init-db
     ```
@@ -31,17 +38,21 @@ The project addresses the question: **"What is the calorie intake per meal type 
 ### Executing program
 
 1.  **Run the Application:**
-    * Run the application using flask:
+    * Start the Flask development server:
     ```
     flask --app flaskr run
     ```
 
 ### Output
 
-* The program will create a directory named "charts" in the current working directory.
-* Inside the "charts" directory, five PNG files will be generated, each representing the calorie intake per meal type for a randomly selected user.
-* The program will also print the dataframes used to generate the charts to the console.
-* The question that the program answers will also be printed to the console.
+* **Registration:** Navigate to `/auth/register` to create a new user account.
+* **Login:** Navigate to `/auth/login` to log in with an existing account.
+* **Logout:** Click the "Log Out" link in the navigation bar to end the session.
+* **Add Expenses:** After logging in, use the dashboard to add new expense entries.
+* **Edit Expenses:** Modify existing expense entries through the dashboard interface.
+* **Delete Expenses:** Remove expense entries as needed.
+* **Add Categories:** Create and manage expense categories to organize your expenses.
+* The application will display success or error messages using Bootstrap modals after each authentication and expense related action.
 
 ## Authors
 
@@ -53,4 +64,6 @@ ex. Tanzeem Siddique
 
 Inspiration, code snippets, etc.
 * [Flask](https://flask.palletsprojects.com/en/stable/tutorial/)
+* [Bootstrap](https://flask.palletsprojects.com/en/stable/tutorhttps://getbootstrap.com/docs/5.3/getting-started/introduction/)
 * [YouTube](https://www.youtube.com/watch?v=Yry14DldSvs)
+* [YouTube](https://chatgpt.com/share/67df4d0f-a480-8013-a2f3-7c73353eccc8https://chatgpt.com/share/67df4d0f-a480-8013-a2f3-7c73353eccc8)
