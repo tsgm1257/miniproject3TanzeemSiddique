@@ -1,19 +1,58 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Register{% endblock %}</h1>
+    <h1>{% block title %}Register{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-  <form method="post">
-    <label for="username">Username</label>
-    <input name="username" id="username" required>
-    <label for="firstname">First Name</label>
-    <input name="firstname" id="firstname" required>
-    <label for="lastname">Last Name</label>
-    <input name="lastname" id="lastname" required>
-    <label for="password">Password</label>
-    <input type="password" name="password" id="password" required>
-    <input type="submit" value="Register">
-  </form>
+    <form id="registerForm">
+        <label for="username">Username</label>
+        <input name="username" id="username" required>
+        <label for="firstname">First Name</label>
+        <input name="firstname" id="firstname" required>
+        <label for="lastname">Last Name</label>
+        <input name="lastname" id="lastname" required>
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" required>
+        <input type="submit" value="Register">
+    </form>
+
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">Registration Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="registerModalBody">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+
+            fetch('{{ url_for("auth.register") }}', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('registerModalBody').textContent = data.message;
+                const modal = new bootstrap.Modal(document.getElementById('registerModal'));
+                modal.show();
+                if (data.success) {
+                    modal._element.addEventListener('hidden.bs.modal', function(){
+                        window.location.href = '{{ url_for("auth.login") }}';
+                    });
+                }
+            });
+        });
+    </script>
 {% endblock %}

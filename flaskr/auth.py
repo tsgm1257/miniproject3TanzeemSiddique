@@ -1,13 +1,14 @@
 import functools
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from flaskr.db import get_db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
+
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
@@ -35,14 +36,14 @@ def register():
                     (username, generate_password_hash(password), firstname, lastname),
                 )
                 db.commit()
+                return jsonify({'success': True, 'message': 'Registration successful!'})
             except db.IntegrityError:
                 error = f"User {username} is already registered."
-            else:
-                return redirect(url_for("auth.login"))
 
-        flash(error)
+        return jsonify({'success': False, 'message': error})
 
     return render_template('auth/register.html')
+
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
@@ -63,11 +64,12 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-            return redirect(url_for('index'))
+            return jsonify({'success': True, 'message': 'Login successful!'})
 
-        flash(error)
+        return jsonify({'success': False, 'message': error})
 
     return render_template('auth/login.html')
+
 
 @bp.before_app_request
 def load_logged_in_user():
@@ -80,10 +82,12 @@ def load_logged_in_user():
             'SELECT * FROM user WHERE id = ?', (user_id,)
         ).fetchone()
 
+
 @bp.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('index'))
+    return jsonify({'success': True, 'message': 'Logged out successfully!'})
+
 
 def login_required(view):
     @functools.wraps(view)

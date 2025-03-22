@@ -10,7 +10,7 @@
         {% if g.user %}
           <li><span>{{ g.user['firstname'] }}</span></li>
           <li><a href="{{ url_for('expense.index') }}">Dashboard</a></li>
-          <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+          <li><a href="#" id="logoutLink">Log Out</a></li>
         {% else %}
           <li><a href="{{ url_for('auth.register') }}">Register</a></li>
           <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
@@ -27,5 +27,39 @@
       {% endfor %}
       {% block content %}{% endblock %}
     </section>
+
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Logout Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="logoutModalBody">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('logoutLink').addEventListener('click', function(event) {
+            event.preventDefault();
+
+            fetch('{{ url_for("auth.logout") }}')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('logoutModalBody').textContent = data.message;
+                const modal = new bootstrap.Modal(document.getElementById('logoutModal'));
+                modal.show();
+                modal._element.addEventListener('hidden.bs.modal', function(){
+                    window.location.href = '{{ url_for("index") }}';
+                });
+
+            });
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
