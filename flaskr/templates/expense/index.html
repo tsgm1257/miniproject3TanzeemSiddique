@@ -4,9 +4,7 @@
   <h1>{% block title %}Expenses{% endblock %}</h1>
   {% if g.user %}
     <!-- Button to trigger modal -->
-    <button type="button" id="add-exp" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#expenseModal">
-      Add Expense
-    </button>
+    <a class="action" href="{{ url_for('expense.create') }}">Add Expense</a>
   {% endif %}
 {% endblock %}
 
@@ -32,59 +30,5 @@
     <p>No expenses found. Add your first expense.</p>
   {% endif %}
 
-{#modal#}
-  <div class="modal fade" id="expenseModal" tabindex="-1" aria-labelledby="expenseModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="expenseModalLabel">Add Expense</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form method="post" action="{{ url_for('expense.create') }}">
-          <div class="mb-3">
-            <label for="amount" class="form-label">Amount</label>
-            <input type="number" class="form-control" id="amount" name="amount" required>
-          </div>
-          <div class="mb-3">
-            <label for="category" class="form-label">Category</label>
-            <select class="form-control" id="category" name="category" required onchange="toggleNewCategory()">
-              <option value="">-- Select a category --</option>
-              {% for category in categories %}
-                <option value="{{ category['id'] }}">{{ category['name'] }}</option>
-              {% endfor %}
-              <option value="new">Create New Category</option>
-            </select>
-          </div>
-          <div id="new-category-container" style="display: none;">
-            <label for="new_category" class="form-label">New Category</label>
-            <input type="text" class="form-control" name="new_category" id="new_category">
-          </div>
-          <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <textarea class="form-control" id="description" name="description" required></textarea>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save Expense</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 
-<script>
-  function toggleNewCategory() {
-    var categorySelect = document.getElementById("category");
-    var newCategoryContainer = document.getElementById("new-category-container");
-    if (categorySelect.value === "new") {
-      newCategoryContainer.style.display = "block";
-      document.getElementById("new_category").setAttribute("required", "true");
-    } else {
-      newCategoryContainer.style.display = "none";
-      document.getElementById("new_category").removeAttribute("required");
-    }
-  }
-</script>
 {% endblock %}
