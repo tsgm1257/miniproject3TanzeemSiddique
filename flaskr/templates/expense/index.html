@@ -3,32 +3,33 @@
 {% block header %}
   <h1>{% block title %}Expenses{% endblock %}</h1>
   {% if g.user %}
-    <!-- Button to trigger modal -->
     <a class="action" href="{{ url_for('expense.create') }}">Add Expense</a>
   {% endif %}
 {% endblock %}
 
 {% block content %}
   {% if expenses %}
-    {% for expense in expenses %}
-      <article class="expense">
-        <header>
-          <h1>${{ expense['amount'] }}</h1>
-          <div class="about">
-            {{ expense['category_name'] if 'category_name' in expense else expense['category'] }}
-            - {{ expense['date'].strftime('%Y-%m-%d') }}
+    <div class="accordion" id="expenseAccordion">
+      {% for expense in expenses %}
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="heading{{ expense['id'] }}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ expense['id'] }}" aria-expanded="false" aria-controls="collapse{{ expense['id'] }}">
+              ${{ expense['amount'] }} - {{ expense['category_name'] if expense['category_name'] else expense['category'] }} - {{ expense['date'].strftime('%Y-%m-%d') }}
+            </button>
+          </h2>
+          <div id="collapse{{ expense['id'] }}" class="accordion-collapse collapse" aria-labelledby="heading{{ expense['id'] }}" data-bs-parent="#expenseAccordion">
+            <div class="accordion-body">
+              <p class="body">{{ expense['description'] }}</p>
+              <a href="{{ url_for('expense.update', id=expense['id']) }}" class="btn btn-primary btn-sm">Edit</a>
+              <form action="{{ url_for('expense.delete', id=expense['id']) }}" method="post" style="display: inline;">
+                <input type="submit" value="Delete" class="btn btn-danger btn-sm mt-3" onclick="return confirm('Are you sure?');">
+              </form>
+            </div>
           </div>
-        </header>
-        <p class="body">{{ expense['description'] }}</p>
-        <a href="{{ url_for('expense.update', id=expense['id']) }}">Edit</a>
-        <form action="{{ url_for('expense.delete', id=expense['id']) }}" method="post">
-          <input type="submit" value="Delete" onclick="return confirm('Are you sure?');">
-        </form>
-      </article>
-    {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
   {% else %}
     <p>No expenses found. Add your first expense.</p>
   {% endif %}
-
-
 {% endblock %}
