@@ -3,7 +3,7 @@
 {% block header %}
   <h1>{% block title %}Expenses{% endblock %}</h1>
   {% if g.user %}
-    <a class="action" href="{{ url_for('expense.create') }}">New</a>
+    <a class="action" href="{{ url_for('expense.create') }}">Add Expense</a>
   {% endif %}
 {% endblock %}
 
@@ -11,17 +11,14 @@
   {% for expense in expenses %}
     <article class="expense">
       <header>
-        <div>
-          <h1>{{ expense['category'] }}</h1>
-          <div class="about">Amount: ${{ expense['amount'] }} | Date: {{ expense['date'].strftime('%Y-%m-%d') }}</div>
-        </div>
-        {% if g.user['id'] == expense['user_id'] %}
-          <a class="action" href="{{ url_for('expense.update', id=expense['id']) }}">Edit</a>
-        {% endif %}
+        <h1>${{ expense['amount'] }}</h1>
+        <div class="about">{{ expense['category'] }} - {{ expense['date'].strftime('%Y-%m-%d') }}</div>
       </header>
+      <p class="body">{{ expense['description'] }}</p>
+      <a href="{{ url_for('expense.update', id=expense['id']) }}">Edit</a>
+      <form action="{{ url_for('expense.delete', id=expense['id']) }}" method="post">
+        <input type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+      </form>
     </article>
-    {% if not loop.last %}
-      <hr>
-    {% endif %}
   {% endfor %}
 {% endblock %}
