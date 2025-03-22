@@ -6,15 +6,26 @@
 
 {% block content %}
   <form method="post">
-    <label for="category">Category</label>
-    <input name="category" id="category" value="{{ request.form['category'] or expense['category'] }}" required>
-
     <label for="amount">Amount</label>
     <input type="number" name="amount" id="amount" step="0.01" value="{{ request.form['amount'] or expense['amount'] }}" required>
 
+    <label for="category">Category</label>
+    <select name="category" id="category" required>
+      {% for category in categories %}
+        <option value="{{ category['id'] }}" {% if category['id'] == expense['category_id'] %}selected{% endif %}>
+          {{ category['name'] }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <label for="description">Description</label>
+    <textarea name="description" id="description">{{ request.form['description'] or expense['description'] }}</textarea>
+
     <input type="submit" value="Save">
   </form>
+
   <hr>
+
   <form action="{{ url_for('expense.delete', id=expense['id']) }}" method="post">
     <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
   </form>

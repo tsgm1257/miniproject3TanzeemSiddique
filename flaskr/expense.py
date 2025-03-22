@@ -12,7 +12,7 @@ bp = Blueprint('expense', __name__)
 def index():
     db = get_db()
     expenses = db.execute(
-        'SELECT e.id, e.amount, e.description, e.date, c.name as category'
+        'SELECT e.id, e.amount, e.description, e.date, c.name AS category_name'
         ' FROM expense e'
         ' JOIN category c ON e.category_id = c.id'
         ' WHERE e.user_id = ?'
@@ -33,8 +33,20 @@ def create():
         category_id = request.form['category']
         error = None
 
-        if not amount or not category_id:
-            error = 'Amount and category are required.'
+        if not amount:
+            error = 'Amount is required.'
+
+        if category_id == 'new':
+            new_category_name = request.form['new_category']
+            if not new_category_name:
+                error = 'New category name is required.'
+            else:
+                try:
+                    db.execute('INSERT INTO category (name) VALUES (?)', (new_category_name,))
+                    db.commit()
+                    category_id = db.execute('SELECT id FROM category WHERE name = ?', (new_category_name,)).fetchone()['id']
+                except db.IntegrityError:
+                    error = f"Category '{new_category_name}' already exists."
 
         if error:
             flash(error)
@@ -50,7 +62,7 @@ def create():
 
 def get_expense(id, check_owner=True):
     expense = get_db().execute(
-        'SELECT e.id, e.amount, e.description, e.date, e.user_id, c.name as category'
+        'SELECT e.id, e.amount, e.description, e.date, e.user_id, c.name AS category_name'
         ' FROM expense e'
         ' JOIN category c ON e.category_id = c.id'
         ' WHERE e.id = ?',

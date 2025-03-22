@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Expenses{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('expense.create') }}">Add Expense</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% if expenses %}
+    {% for expense in expenses %}
+      <article class="expense">
+        <header>
+          <h1>${{ expense['amount'] }}</h1>
+          <div class="about">
+            {{ expense['category_name'] if 'category_name' in expense else expense['category'] }}
+            - {{ expense['date'].strftime('%Y-%m-%d') }}
+          </div>
+        </header>
+        <p class="body">{{ expense['description'] }}</p>
+        <a href="{{ url_for('expense.update', id=expense['id']) }}">Edit</a>
+        <form action="{{ url_for('expense.delete', id=expense['id']) }}" method="post">
+          <input type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+        </form>
+      </article>
+    {% endfor %}
+  {% else %}
+    <p>No expenses found. <a href="{{ url_for('expense.create') }}">Add your first expense</a>.</p>
+  {% endif %}
+{% endblock %}
