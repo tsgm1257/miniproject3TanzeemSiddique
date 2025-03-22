@@ -7,6 +7,7 @@ from flaskr.db import get_db
 
 bp = Blueprint('expense', __name__)
 
+
 @bp.route('/')
 @login_required
 def index():
@@ -19,7 +20,12 @@ def index():
         ' ORDER BY e.date DESC',
         (g.user['id'],)
     ).fetchall()
-    return render_template('expense/index.html', expenses=expenses)
+
+    # Fetch categories for modal form
+    categories = db.execute('SELECT * FROM category').fetchall()
+
+    return render_template('expense/index.html', expenses=expenses, categories=categories)
+
 
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
